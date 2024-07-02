@@ -2,22 +2,30 @@
 using ASPEKT.Application.Core.Repositories;
 using ASPEKT.Application.Core.Services;
 using ASPEKT.Application.DTOS.Company;
-using ASPEKT.Application.DTOS.Contact;
 using ASPEKT.Application.Mappers;
 using ASPEKT.Application.Services.Exceptions;
+using ASPEKT.Application.Services.FluentValidations;
+using FluentValidation;
 
 namespace ASPEKT.Application.Services
 {
     public class CompanyService : IService<CompanyDto>
     {
         private IRepository<Company> _companyRepository;
+        private CompanyValidator _validator;
         public CompanyService(IRepository<Company> companyRepository)
         {
             _companyRepository = companyRepository;
+            _validator = new CompanyValidator();
         }
         public void AddEntity(CompanyDto entity)
         {
-            ValidateInputForCompany(entity);
+            var validate = _validator.Validate(entity);
+            if (!validate.IsValid)
+            {
+                throw new ValidationException(validate.Errors);
+            }
+            //ValidateInputForCompany(entity);
             Company addCompany = entity.ToCompany();
             _companyRepository.Create(addCompany);
         }
@@ -84,7 +92,7 @@ namespace ASPEKT.Application.Services
             {
                 throw new WrongDataException("The company name must be entered!!");
             }
-            if(entity.CompanyName.Length > 50)
+            if (entity.CompanyName.Length > 50)
             {
                 throw new WrongDataException("The company name must be less than a 50 characters");
             }

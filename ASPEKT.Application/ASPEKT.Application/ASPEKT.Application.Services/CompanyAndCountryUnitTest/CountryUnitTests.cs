@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 
-namespace ASPEKT.Application.Services.ComapnyServiceUnitTests
+namespace ASPEKT.Application.Services.CompanyAndCountryUnitTest
 {
     [TestClass]
     public class CountryUnitTests

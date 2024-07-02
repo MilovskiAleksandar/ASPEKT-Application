@@ -64,7 +64,7 @@ namespace ASPEKT.Application.Services
                     throw new NotFoundException($"Contacts for Company with id {companyId} not found");
                 }
                 return contactFirst.Select(x => x.ToContactFilterCompany()).ToList();
-            }
+        }
 
             if (companyId == null)
             {

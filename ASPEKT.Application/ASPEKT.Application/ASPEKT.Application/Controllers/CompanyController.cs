@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
+using System.ComponentModel.DataAnnotations;
 
 namespace ASPEKT.Application.Controllers
 {
@@ -65,6 +66,11 @@ namespace ASPEKT.Application.Controllers
             {
                 _companyService.AddEntity(company);
                 return StatusCode(StatusCodes.Status201Created, "Company created successfully");
+            }
+            catch(ValidationException e)
+            {
+                Log.Error(e, "Wrong data entered in AddingCompany: {Message}", e.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
             catch (WrongDataException e)
             {

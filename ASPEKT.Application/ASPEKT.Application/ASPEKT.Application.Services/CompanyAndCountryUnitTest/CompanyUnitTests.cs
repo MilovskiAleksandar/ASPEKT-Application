@@ -3,20 +3,23 @@ using ASPEKT.Application.Core.Repositories;
 using ASPEKT.Application.DTOS.Company;
 using ASPEKT.Application.DTOS.Country;
 using ASPEKT.Application.Services.Exceptions;
+using ASPEKT.Application.Services.FluentValidations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace ASPEKT.Application.Services.ComapnyServiceUnitTests
+namespace ASPEKT.Application.Services.CompanyAndCountryUnitTest
 {
     [TestClass]
     public class CompanyUnitTests
     {
         private readonly Mock<IRepository<Company>> _mockCompanyRepository;
         private readonly CompanyService _companyService;
+        //private readonly CompanyValidator _companyValidator;
 
         public CompanyUnitTests()
         {
             _mockCompanyRepository = new Mock<IRepository<Company>>();
+            //_companyValidator = new CompanyValidator();
             _companyService = new CompanyService(_mockCompanyRepository.Object);
         }
 
