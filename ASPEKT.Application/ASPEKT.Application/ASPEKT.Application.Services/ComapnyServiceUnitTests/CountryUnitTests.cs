@@ -1,6 +1,5 @@
 ﻿using ASPEKT.Application.Core.Models;
 using ASPEKT.Application.Core.Repositories;
-using ASPEKT.Application.DTOS.Company;
 using ASPEKT.Application.DTOS.Country;
 using ASPEKT.Application.Services.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

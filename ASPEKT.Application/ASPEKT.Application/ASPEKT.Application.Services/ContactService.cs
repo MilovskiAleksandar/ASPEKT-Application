@@ -58,22 +58,22 @@ namespace ASPEKT.Application.Services
         {
             if (countryId == null)
             {
-                List<Contact> contactDb1 = _contactRepository.FilterContact(countryId, companyId);
-                if(!contactDb1.Any())
+                List<Contact> contactFirst = _contactRepository.FilterContact(countryId, companyId);
+                if(!contactFirst.Any())
                 {
                     throw new NotFoundException($"Contacts for Company with id {companyId} not found");
                 }
-                return contactDb1.Select(x => x.ToContactFilterCompany()).ToList();
+                return contactFirst.Select(x => x.ToContactFilterCompany()).ToList();
             }
 
             if (companyId == null)
             {
-                List<Contact> contactDb2 = _contactRepository.FilterContact(countryId, companyId);
-                if (!contactDb2.Any())
+                List<Contact> contactsSecond = _contactRepository.FilterContact(countryId, companyId);
+                if (!contactsSecond.Any())
                 {
                     throw new NotFoundException($"Contacts for Country with id {countryId} not found");
                 }
-                return contactDb2.Select(x => x.ToContactFilterCountry()).ToList();
+                return contactsSecond.Select(x => x.ToContactFilterCountry()).ToList();
             }
 
             List<Contact> contactDb = _contactRepository.FilterContact(countryId, companyId);
