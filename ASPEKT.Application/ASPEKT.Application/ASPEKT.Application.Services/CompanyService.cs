@@ -25,7 +25,6 @@ namespace ASPEKT.Application.Services
             {
                 throw new ValidationException(validate.Errors);
             }
-            //ValidateInputForCompany(entity);
             Company addCompany = entity.ToCompany();
             _companyRepository.Create(addCompany);
         }
@@ -74,7 +73,11 @@ namespace ASPEKT.Application.Services
 
         public void UpdateEntity(CompanyDto entity)
         {
-            ValidateInputForCompany(entity);
+            var validate = _validator.Validate(entity);
+            if (!validate.IsValid)
+            {
+                throw new ValidationException(validate.Errors);
+            }
             Company company = _companyRepository.GetById(entity.CompanyId);
 
             if (company == null)
@@ -84,18 +87,6 @@ namespace ASPEKT.Application.Services
 
             company.CompanyName = entity.CompanyName;
             _companyRepository.Update(company);
-        }
-
-        private void ValidateInputForCompany(CompanyDto entity)
-        {
-            if (string.IsNullOrEmpty(entity.CompanyName))
-            {
-                throw new WrongDataException("The company name must be entered!!");
-            }
-            if (entity.CompanyName.Length > 50)
-            {
-                throw new WrongDataException("The company name must be less than a 50 characters");
-            }
         }
     }
 }

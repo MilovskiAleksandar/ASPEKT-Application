@@ -1,9 +1,9 @@
 ﻿using ASPEKT.Application.Core.Services;
 using ASPEKT.Application.DTOS.Country;
 using ASPEKT.Application.Services.Exceptions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using FluentValidation;
 
 namespace ASPEKT.Application.Controllers
 {
@@ -63,6 +63,11 @@ namespace ASPEKT.Application.Controllers
                 _service.AddEntity(country);
                 return StatusCode(StatusCodes.Status201Created, "Company created successfully");
             }
+            catch (ValidationException e)
+            {
+                Log.Error(e, "Wrong data entered in AddingCOuntry: {Message}", e.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
             catch (WrongDataException e)
             {
                 Log.Error(e, "Wrong data entered in AddingCountry: {Message}", e.Message);
@@ -82,6 +87,11 @@ namespace ASPEKT.Application.Controllers
             {
                 _service.UpdateEntity(country);
                 return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (ValidationException e)
+            {
+                Log.Error(e, "Wrong data entered in UpdateCountry: {Message}", e.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
             catch (WrongDataException e)
             {

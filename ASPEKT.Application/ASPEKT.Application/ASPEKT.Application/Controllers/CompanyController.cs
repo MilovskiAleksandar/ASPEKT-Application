@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
-using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace ASPEKT.Application.Controllers
 {
@@ -91,6 +91,11 @@ namespace ASPEKT.Application.Controllers
             {
                 _companyService.UpdateEntity(company);
                 return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (ValidationException e)
+            {
+                Log.Error(e, "Wrong data entered in Update: {Message}", e.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
             catch (WrongDataException e)
             {

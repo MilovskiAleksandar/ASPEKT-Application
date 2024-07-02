@@ -1,28 +1,30 @@
 ﻿using ASPEKT.Application.Core.Models;
 using ASPEKT.Application.Core.Repositories;
 using ASPEKT.Application.Core.Services;
-using ASPEKT.Application.DTOS.Company;
 using ASPEKT.Application.DTOS.Country;
 using ASPEKT.Application.Services.Exceptions;
+using ASPEKT.Application.Services.FluentValidations;
 using ASPEKT.Application.Services.Mappers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentValidation;
 
 namespace ASPEKT.Application.Services
 {
     public class CountryService : IService<CountryDto>
     {
         private IRepository<Country> _countryRepository;
+        private CountryValidator _countryValidator;
         public CountryService(IRepository<Country> countryRepository)
         {
             _countryRepository = countryRepository;
+            _countryValidator = new CountryValidator();
         }
         public void AddEntity(CountryDto entity)
         {
-            ValidateInputForCountry(entity);
+            var validate = _countryValidator.Validate(entity);
+            if (!validate.IsValid)
+            {
+                throw new ValidationException(validate.Errors);
+            }
             Country newCountry = entity.ToCountry();
             _countryRepository.Create(newCountry);
         }
@@ -68,7 +70,11 @@ namespace ASPEKT.Application.Services
 
         public void UpdateEntity(CountryDto entity)
         {
-            ValidateInputForCountry(entity);
+            var validate = _countryValidator.Validate(entity);
+            if (!validate.IsValid)
+            {
+                throw new ValidationException(validate.Errors);
+            }
             Country countryDb = _countryRepository.GetById(entity.CountryId);
             if( countryDb == null)
             {
@@ -77,18 +83,6 @@ namespace ASPEKT.Application.Services
 
             countryDb.CountryName = entity.CountryName;
             _countryRepository.Update(countryDb);
-        }
-
-        private void ValidateInputForCountry(CountryDto entity)
-        {
-            if (string.IsNullOrEmpty(entity.CountryName))
-            {
-                throw new WrongDataException("The country name must be entered!!");
-            }
-            if (entity.CountryName.Length > 50)
-            {
-                throw new WrongDataException("The country name must be less than a 50 characters");
-            }
         }
     }
 }

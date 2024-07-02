@@ -1,9 +1,9 @@
 ﻿using ASPEKT.Application.Core.Services;
 using ASPEKT.Application.DTOS.Contact;
 using ASPEKT.Application.Services.Exceptions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using FluentValidation;
 
 namespace ASPEKT.Application.Controllers
 {
@@ -63,7 +63,12 @@ namespace ASPEKT.Application.Controllers
                 _contactService.AddEntity(contact);
                 return StatusCode(StatusCodes.Status201Created, "Contact created successfully");
             }
-            catch(WrongDataException e)
+            catch (ValidationException e)
+            {
+                Log.Error(e, "Wrong data entered in AddingContact: {Message}", e.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
+            }
+            catch (WrongDataException e)
             {
                 Log.Error(e, "Wrong data entered in AddingContact: {Message}", e.Message);
                 return StatusCode(StatusCodes.Status400BadRequest, e.Message);
@@ -82,6 +87,11 @@ namespace ASPEKT.Application.Controllers
             {
                 _contactService.UpdateEntity(contactDto);
                 return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (ValidationException e)
+            {
+                Log.Error(e, "Wrong data entered in UpdateContact: {Message}", e.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
             catch (WrongDataException e)
             {

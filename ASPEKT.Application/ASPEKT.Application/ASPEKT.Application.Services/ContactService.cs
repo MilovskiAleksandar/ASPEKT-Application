@@ -2,29 +2,36 @@
 using ASPEKT.Application.Core.Repositories;
 using ASPEKT.Application.Core.Services;
 using ASPEKT.Application.DTOS.Contact;
-using ASPEKT.Application.DTOS.Country;
 using ASPEKT.Application.Services.Exceptions;
+using ASPEKT.Application.Services.FluentValidations;
 using ASPEKT.Application.Services.Mappers;
-using Microsoft.Extensions.Logging;
+using FluentValidation;
 
 namespace ASPEKT.Application.Services
 {
     public class ContactService : IContactService<ContactDto, FilterContactDto>
     {
-        public IContactRepository _contactRepository;
-        public IRepository<Company> _companyRepository;
-        public IRepository<Country> _countryRepository;
+        private IContactRepository _contactRepository;
+        private IRepository<Company> _companyRepository;
+        private IRepository<Country> _countryRepository;
+        private ContactValidator _contactValidator;
 
         public ContactService(IRepository<Company> companyRepository, IRepository<Country> countryRepository, IContactRepository contactRepository)
         {
             _companyRepository = companyRepository;
             _countryRepository = countryRepository;
             _contactRepository = contactRepository;
+            _contactValidator = new ContactValidator();
         }
         public void AddEntity(ContactDto entity)
         {
-            ValidateInputForContact(entity);
-           Contact newContact = entity.ToContact();
+            var validate = _contactValidator.Validate(entity);
+            if (!validate.IsValid)
+            {
+                throw new ValidationException(validate.Errors);
+            }
+
+            Contact newContact = entity.ToContact();
             if(entity == null)
             {
                 throw new WrongDataException("You must send data");
@@ -120,7 +127,12 @@ namespace ASPEKT.Application.Services
 
         public void UpdateEntity(ContactDto entity)
         {
-            ValidateInputForContact(entity);
+            var validate = _contactValidator.Validate(entity);
+            if (!validate.IsValid)
+            {
+                throw new ValidationException(validate.Errors);
+            }
+
             if (entity.CountryId <= 0)
             {
                 throw new NotFoundException($"Country with id {entity.CountryId} was not found.");
@@ -142,18 +154,6 @@ namespace ASPEKT.Application.Services
             contactDb.CompanyId = entity.CompanyId;
 
             _contactRepository.Update(contactDb);
-        }
-
-        private void ValidateInputForContact(ContactDto entity)
-        {
-            if (string.IsNullOrEmpty(entity.ContactName))
-            {
-                throw new WrongDataException("The contact name must be entered!!");
-            }
-            if (entity.ContactName.Length > 50)
-            {
-                throw new WrongDataException("The contact name must be less than a 50 characters");
-            }
         }
     }
 }
