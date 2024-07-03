@@ -61,7 +61,7 @@ namespace ASPEKT.Application.Controllers
             try
             {
                 _service.AddEntity(country);
-                return StatusCode(StatusCodes.Status201Created, "Company created successfully");
+                return StatusCode(StatusCodes.Status201Created, "Country created successfully");
             }
             catch (ValidationException e)
             {

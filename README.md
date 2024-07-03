@@ -17,6 +17,9 @@ MSTest: The testing framework that comes with Visual Studio. It is integrated wi
 # Logging
 Serilog: Used for logging errors and critical issues to help diagnose and trace problems.
 
+# Validations
+FluentValidation is a popular library for building strongly-typed validation rules in .NET applications. 
+
 # Frontend
 Swagger: Tool for generating interactive API documentation and testing endpoints directly from the browser.
 

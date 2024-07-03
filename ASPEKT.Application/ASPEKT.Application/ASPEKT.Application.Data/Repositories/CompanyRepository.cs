@@ -1,10 +1,5 @@
 ﻿using ASPEKT.Application.Core.Models;
 using ASPEKT.Application.Core.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ASPEKT.Application.Data.Repositories
 {

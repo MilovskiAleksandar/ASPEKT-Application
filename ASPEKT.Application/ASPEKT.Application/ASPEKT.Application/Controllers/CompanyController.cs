@@ -2,9 +2,7 @@
 using ASPEKT.Application.Core.Services;
 using ASPEKT.Application.DTOS.Company;
 using ASPEKT.Application.Services.Exceptions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Serilog;
 using FluentValidation;
 
